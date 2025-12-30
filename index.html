@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Civil Freelance Jobs</title>
+
+  <style>
+    /* ---------- RESET ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #fafafa;
+      color: #222;
+      line-height: 1.6;
+    }
+
+    /* ---------- NAVIGATION ---------- */
+    nav {
+      background: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 16px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #333;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- MAIN CONTAINER ---------- */
+    .container {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+
+    /* ---------- JOB CARD ---------- */
+    .job {
+      background: #ffffff;
+      padding: 16px;
+      margin-bottom: 16px;
+      border-radius: 6px;
+      border: 1px solid #e6e6e6;
+    }
+
+    .job-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #000;
+      margin-bottom: 8px;
+    }
+
+    .job-description {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .job-email {
+      font-size: 0.9rem;
+      color: #8b0000; /* dark red */
+      font-style: italic;
+    }
+
+    /* ---------- STATIC PAGES ---------- */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .page h2 {
+      margin-bottom: 10px;
+    }
+
+    .page p {
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+    /* ---------- MOBILE ---------- */
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      nav ul {
+        width: 100%;
+        justify-content: space-around;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <h1>Civil Freelance Jobs</h1>
+    <ul>
+      <li><a href="#" onclick="showPage('home')">Home</a></li>
+      <li><a href="#" onclick="showPage('about')">About</a></li>
+      <li><a href="#" onclick="showPage('privacy')">Privacy Policy</a></li>
+    </ul>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="container">
+
+    <!-- HOME -->
+    <div id="home" class="page active">
+      <div class="job">
+        <div class="job-title">Structural Drafting for Residential Building</div>
+        <div class="job-description">
+          Need detailed AutoCAD structural drawings for a two-storey residential building.
+          Columns, beams, slab details required.
+        </div>
+        <div class="job-email">contact: engineer.project@gmail.com</div>
+      </div>
+
+      <div class="job">
+        <div class="job-title">Quantity Surveyor – BOQ Preparation</div>
+        <div class="job-description">
+          Looking for an experienced QS to prepare BOQs for a small commercial project.
+          Measurement accuracy is critical.
+        </div>
+        <div class="job-email">contact: qs.contract@gmail.com</div>
+      </div>
+
+      <div class="job">
+        <div class="job-title">Civil 3D Road Profile Design</div>
+        <div class="job-description">
+          Freelance engineer required to prepare longitudinal profile and cross-sections
+          using Civil 3D for a rural road project.
+        </div>
+        <div class="job-email">contact: roads.design@gmail.com</div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="about" class="page">
+      <h2>About</h2>
+      <p>
+        This platform connects civil engineering freelancers with individuals and companies
+        offering short-term or freelance work. All job listings are posted freely and
+        communication happens directly via email.
+      </p>
+    </div>
+
+    <!-- PRIVACY -->
+    <div id="privacy" class="page">
+      <h2>Privacy Policy</h2>
+      <p>
+        We do not collect personal user data. Email addresses shown in job listings are
+        publicly provided by job posters for direct contact. We are not responsible for
+        the content or authenticity of job ads.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    function showPage(pageId) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
