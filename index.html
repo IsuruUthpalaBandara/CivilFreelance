@@ -28,6 +28,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     nav h1 {
@@ -38,17 +40,28 @@
     nav ul {
       list-style: none;
       display: flex;
-      gap: 16px;
+      gap: 14px;
+      align-items: center;
     }
 
-    nav a {
+    nav a, nav button {
       text-decoration: none;
       color: #333;
       font-size: 0.95rem;
+      background: none;
+      border: none;
+      cursor: pointer;
     }
 
-    nav a:hover {
-      text-decoration: underline;
+    nav button.post-btn {
+      padding: 6px 12px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    nav button.post-btn:hover {
+      background: #f0f0f0;
     }
 
     /* ---------- MAIN CONTAINER ---------- */
@@ -82,11 +95,11 @@
 
     .job-email {
       font-size: 0.9rem;
-      color: #8b0000; /* dark red */
+      color: #8b0000;
       font-style: italic;
     }
 
-    /* ---------- STATIC PAGES ---------- */
+    /* ---------- PAGES ---------- */
     .page {
       display: none;
     }
@@ -96,12 +109,69 @@
     }
 
     .page h2 {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
-    .page p {
+    /* ---------- FORM ---------- */
+    form {
+      background: #ffffff;
+      padding: 16px;
+      border: 1px solid #e6e6e6;
+      border-radius: 6px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+
+    .checkbox input {
+      margin-top: 3px;
+    }
+
+    .submit-btn {
+      padding: 10px 16px;
+      border: none;
+      background: #000;
+      color: #fff;
+      border-radius: 4px;
       font-size: 0.95rem;
-      color: #444;
+      cursor: pointer;
+    }
+
+    .submit-btn:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    .success {
+      margin-top: 12px;
+      color: green;
+      font-size: 0.9rem;
     }
 
     /* ---------- MOBILE ---------- */
@@ -109,12 +179,11 @@
       nav {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
       }
 
       nav ul {
         width: 100%;
-        justify-content: space-around;
+        justify-content: space-between;
       }
     }
   </style>
@@ -129,10 +198,10 @@
       <li><a href="#" onclick="showPage('home')">Home</a></li>
       <li><a href="#" onclick="showPage('about')">About</a></li>
       <li><a href="#" onclick="showPage('privacy')">Privacy Policy</a></li>
+      <li><button class="post-btn" onclick="showPage('post')">Post Job</button></li>
     </ul>
   </nav>
 
-  <!-- CONTENT -->
   <div class="container">
 
     <!-- HOME -->
@@ -140,38 +209,48 @@
       <div class="job">
         <div class="job-title">Structural Drafting for Residential Building</div>
         <div class="job-description">
-          Need detailed AutoCAD structural drawings for a two-storey residential building.
-          Columns, beams, slab details required.
+          Need AutoCAD structural drawings for a two-storey residential building.
         </div>
         <div class="job-email">contact: engineer.project@gmail.com</div>
       </div>
+    </div>
 
-      <div class="job">
-        <div class="job-title">Quantity Surveyor – BOQ Preparation</div>
-        <div class="job-description">
-          Looking for an experienced QS to prepare BOQs for a small commercial project.
-          Measurement accuracy is critical.
-        </div>
-        <div class="job-email">contact: qs.contract@gmail.com</div>
-      </div>
+    <!-- POST JOB -->
+    <div id="post" class="page">
+      <h2>Post a Freelance Job</h2>
 
-      <div class="job">
-        <div class="job-title">Civil 3D Road Profile Design</div>
-        <div class="job-description">
-          Freelance engineer required to prepare longitudinal profile and cross-sections
-          using Civil 3D for a rural road project.
+      <form onsubmit="submitJob(event)">
+        <label>Job Title</label>
+        <input type="text" required>
+
+        <label>Job Description</label>
+        <textarea required></textarea>
+
+        <label>Contact Email</label>
+        <input type="email" required>
+
+        <div class="checkbox">
+          <input type="checkbox" id="agree" required>
+          <label for="agree">
+            By submitting this job, I agree to the Privacy Policy and confirm that the
+            information provided is accurate and lawful.
+          </label>
         </div>
-        <div class="job-email">contact: roads.design@gmail.com</div>
-      </div>
+
+        <button class="submit-btn" type="submit">Submit Job</button>
+
+        <div id="successMessage" class="success" style="display:none;">
+          Job submitted successfully. It will appear after review.
+        </div>
+      </form>
     </div>
 
     <!-- ABOUT -->
     <div id="about" class="page">
       <h2>About</h2>
       <p>
-        This platform connects civil engineering freelancers with individuals and companies
-        offering short-term or freelance work. All job listings are posted freely and
-        communication happens directly via email.
+        A simple platform for connecting civil engineering freelancers with freelance
+        opportunities. No accounts. No middlemen. Direct professional contact.
       </p>
     </div>
 
@@ -179,9 +258,8 @@
     <div id="privacy" class="page">
       <h2>Privacy Policy</h2>
       <p>
-        We do not collect personal user data. Email addresses shown in job listings are
-        publicly provided by job posters for direct contact. We are not responsible for
-        the content or authenticity of job ads.
+        We only display information provided by job posters. Email addresses are shown
+        publicly for professional contact. We are not responsible for job outcomes.
       </p>
     </div>
 
@@ -190,11 +268,18 @@
   <!-- SCRIPT -->
   <script>
     function showPage(pageId) {
-      const pages = document.querySelectorAll('.page');
-      pages.forEach(page => page.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
+    }
+
+    function submitJob(e) {
+      e.preventDefault();
+      document.getElementById('successMessage').style.display = 'block';
+      e.target.reset();
     }
   </script>
 
 </body>
 </html>
+
+
