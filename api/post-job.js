@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   const { title, description, email } = req.body;
 
   if (!title || !description || !email) {
-    return res.status(400).json({ error: "Missing fields" });
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
   const token = uuidv4();
@@ -39,24 +39,34 @@ export default async function handler(req, res) {
     if (!supaRes.ok) {
       const text = await supaRes.text();
       console.error("Supabase error:", text);
-      throw new Error("Failed to save job");
+      return res.status(500).json({ error: "Failed to save job in database" });
     }
 
     // --- Send verification email ---
-    await resend.emails.send({
-      from: "jobs@resend.dev",   // use your verified email in Resend
-      to: email,
-      subject: "Verify your job posting",
-      html: `
-        <p>Please verify your job post:</p>
-        <a href="${verifyLink}">Verify Job</a>
-      `
-    });
+    try {
+      const emailResult = await resend.emails.send({
+        from: "jobs@resend.dev", // MUST be verified in your Resend account
+        to: email,
+        subject: "Verify your job posting",
+        html: `
+          <p>Hello,</p>
+          <p>Please verify your job post by clicking the link below:</p>
+          <a href="${verifyLink}">Verify Job</a>
+          <p>If you did not submit this, ignore this email.</p>
+        `
+      });
+
+      console.log("Resend email sent:", emailResult);
+
+    } catch (emailErr) {
+      console.error("Failed to send verification email:", emailErr);
+      return res.status(500).json({ error: "Failed to send verification email" });
+    }
 
     res.status(200).json({ ok: true });
 
   } catch (err) {
-    console.error("Error sending email or saving job:", err);
-    res.status(500).json({ error: "Failed to submit job. Try again." });
+    console.error("Unexpected error:", err);
+    res.status(500).json({ error: "Something went wrong" });
   }
 }
