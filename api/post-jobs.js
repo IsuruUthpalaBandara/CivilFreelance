@@ -1,9 +1,14 @@
-import { Resend } from "resend";
-import { v4 as uuidv4 } from "uuid";
+//import { Resend } from "resend";
+//import { v4 as uuidv4 } from "uuid";
+const { Resend } = require("resend");
+const { v4: uuidv4 } = require("uuid");
+
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export default async function handler(req, res) {
+//export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
+
   if (req.method !== "POST") {
     return res.status(405).end();
   }
