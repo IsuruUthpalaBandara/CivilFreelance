@@ -6,40 +6,45 @@
 <title>Civil Freelance Jobs</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
-body{background:#fafafa;color:#222;line-height:1.6}
-nav{background:#fff;border-bottom:1px solid #e0e0e0;padding:12px 16px;display:flex;justify-content:space-between;flex-wrap:wrap}
-nav ul{list-style:none;display:flex;gap:14px}
-nav a,nav button{background:none;border:none;text-decoration:none;color:#333;cursor:pointer}
-.post-btn{border:1px solid #333;padding:6px 12px;border-radius:4px}
+* { box-sizing: border-box; font-family: system-ui; }
+body { background:#fafafa; padding:0; margin:0; }
 
-.container{max-width:700px;margin:20px auto;padding:0 16px}
+nav {
+  background:#fff;
+  padding:12px 16px;
+  border-bottom:1px solid #ddd;
+  display:flex;
+  justify-content:space-between;
+}
 
-.page{display:none}
-.page.active{display:block}
+nav ul { list-style:none; display:flex; gap:12px; }
 
-.job{background:#fff;padding:16px;margin-bottom:16px;border:1px solid #e6e6e6;border-radius:6px}
-.job-title{font-weight:700;font-size:1.05rem;margin-bottom:6px}
-.job-description{margin-bottom:8px}
-.job-email{color:#8b0000;font-style:italic}
+.container { max-width:700px; margin:20px auto; padding:16px; }
 
-form{background:#fff;padding:16px;border:1px solid #e6e6e6;border-radius:6px}
-input,textarea{width:100%;padding:8px;margin-bottom:12px;border:1px solid #ccc;border-radius:4px}
-.submit-btn{background:#000;color:#fff;border:none;padding:10px 16px;border-radius:4px}
+.job {
+  background:#fff;
+  padding:16px;
+  border:1px solid #ddd;
+  border-radius:6px;
+  margin-bottom:12px;
+}
 
-.success{margin-top:12px;color:green}
+.page { display:none; }
+.page.active { display:block; }
+
+.success { color:green; margin-top:10px; }
+
+button { padding:8px 14px; cursor:pointer; }
 </style>
 </head>
 
 <body>
 
 <nav>
-  <h1>Civil Freelance Jobs</h1>
+  <h3>Civil Freelance Jobs</h3>
   <ul>
-    <li><a onclick="showPage('home')">Home</a></li>
-    <li><a onclick="showPage('about')">About</a></li>
-    <li><a onclick="showPage('privacy')">Privacy Policy</a></li>
-    <li><button class="post-btn" onclick="showPage('post')">Post Job</button></li>
+    <li><a href="#" onclick="showPage('home')">Home</a></li>
+    <li><a href="#" onclick="showPage('post')">Post Job</a></li>
   </ul>
 </nav>
 
@@ -52,70 +57,73 @@ input,textarea{width:100%;padding:8px;margin-bottom:12px;border:1px solid #ccc;b
 
 <!-- POST -->
 <div id="post" class="page">
-<h2>Post a Freelance Job</h2>
-<form id="jobForm">
-<input id="title" placeholder="Job Title" required>
-<textarea id="description" placeholder="Job Description" required></textarea>
-<input id="email" type="email" placeholder="Contact Email" required>
-<label><input type="checkbox" required> I agree to the Privacy Policy</label>
-<button class="submit-btn">Submit Job</button>
-<div id="successMessage" class="success" style="display:none"></div>
-</form>
-</div>
+  <h2>Post Job</h2>
 
-<!-- ABOUT -->
-<div id="about" class="page">
-<h2>About</h2>
-<p>A simple platform for civil engineering freelancers.</p>
-</div>
+  <form id="jobForm">
+    <input required placeholder="Job Title"><br><br>
+    <textarea required placeholder="Description"></textarea><br><br>
+    <input type="email" required placeholder="Email"><br><br>
+    <button type="submit">Submit</button>
+  </form>
 
-<!-- PRIVACY -->
-<div id="privacy" class="page">
-<h2>Privacy Policy</h2>
-<p>Email addresses are shown publicly for professional contact.</p>
+  <div id="successMessage" class="success" style="display:none"></div>
 </div>
 
 </div>
 
 <script>
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-async function loadJobs(){
-  const res = await fetch('/api/get-jobs');
-  const jobs = await res.json();
-  const container = document.getElementById('jobs');
-  container.innerHTML = '';
+document.getElementById("jobForm").addEventListener("submit", submitJob);
 
-  jobs.forEach(job=>{
-    const div=document.createElement('div');
-    div.className='job';
-    div.innerHTML=`
-      <div class="job-title">${job.title}</div>
-      <div class="job-description">${job.description}</div>
-      <div class="job-email">${job.email}</div>`;
-    container.appendChild(div);
-  });
+async function submitJob(e) {
+  e.preventDefault();
+
+  const [title, description, email] = e.target.elements;
+
+  try {
+    const res = await fetch("/api/post-job", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: title.value,
+        description: description.value,
+        email: email.value
+      })
+    });
+
+    if (!res.ok) throw new Error("Request failed");
+
+    const msg = document.getElementById("successMessage");
+    msg.innerText = "Verification email sent. Check spam too.";
+    msg.style.display = "block";
+    e.target.reset();
+
+  } catch (err) {
+    alert("Submission failed. Check console.");
+    console.error(err);
+  }
 }
 
-document.getElementById('jobForm').addEventListener('submit', async e=>{
-  e.preventDefault();
-  const title=title.value, description=description.value, email=email.value;
+async function loadJobs() {
+  const res = await fetch("/api/get-jobs");
+  const jobs = await res.json();
 
-  const res=await fetch('/api/post-job',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({title,description,email})
+  const container = document.getElementById("jobs");
+  container.innerHTML = "";
+
+  jobs.forEach(j => {
+    container.innerHTML += `
+      <div class="job">
+        <b>${j.title}</b>
+        <p>${j.description}</p>
+        <i>${j.email}</i>
+      </div>`;
   });
-
-  if(res.ok){
-    successMessage.innerText='Verification email sent.';
-    successMessage.style.display='block';
-    e.target.reset();
-  }
-});
+}
 
 loadJobs();
 </script>
