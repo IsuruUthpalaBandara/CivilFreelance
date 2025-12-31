@@ -243,6 +243,8 @@
           Job submitted successfully. It will appear after review.
         </div>
       </form>
+     <p id="successMessage" style="display:none;color:green;"></p>
+
     </div>
 
     <!-- ABOUT -->
@@ -278,8 +280,34 @@
       e.target.reset();
     }
   </script>
+<script>
+async function submitJob(e) {
+  e.preventDefault();
+
+  const title = e.target[0].value;
+  const description = e.target[1].value;
+  const email = e.target[2].value;
+
+  const res = await fetch("/api/post-job", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, description, email })
+  });
+
+  if (res.ok) {
+    document.getElementById("successMessage").innerText =
+      "Verification email sent. Please check your inbox.";
+    document.getElementById("successMessage").style.display = "block";
+    e.target.reset();
+  }
+}
+</script>
+
 
 </body>
 </html>
+
+
+
 
 
